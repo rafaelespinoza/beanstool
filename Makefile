@@ -1,13 +1,13 @@
 # Package configuration
 PROJECT = beanstool
 COMMANDS = beanstool
-DEPENDENCIES =
 
 # Environment
 BASE_PATH := $(shell pwd)
 BUILD_PATH := $(BASE_PATH)/build
-VERSION ?= $(shell git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-BUILD ?= $(shell date --utc --rfc-3339=seconds | tr ' ' 'T')
+BIN_DIR := $(BASE_PATH)/bin
+VERSION ?= $(shell git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/' | tr '/' '_')
+BUILD ?= $(shell date --utc +%FT%T%z | tr ' ' 'T')
 ASSETS := static
 
 # PACKAGES
@@ -17,25 +17,23 @@ PKG_CONTENT = LICENSE
 
 # Go parameters
 GOCMD = go
-GOBUILD = $(GOCMD) build
-GOCLEAN = $(GOCMD) clean
-GOGET = $(GOCMD) get
-GOTEST = $(GOCMD) test
+
+.PHONY: all build test dependencies install packages clean
 
 # Rules
 all: test build
 
 build: dependencies
+	mkdir -p $(BIN_DIR)
 	for cmd in $(COMMANDS); do \
-		$(GOCMD) build -ldflags "-X main.version=$(VERSION) -X main.build=$(BUILD)" $${cmd}.go; \
+		$(GOCMD) build -o $(BIN_DIR)/ -ldflags "-X main.version=$(VERSION) -X main.build=$(BUILD)" $${cmd}.go; \
 	done
 
 test: dependencies
-	cd $(BASE_PATH); $(GOTEST) -v ./...
+	cd $(BASE_PATH); $(GOCMD) test -v ./...
 
 dependencies:
-	$(GOGET) -d -v ./...
-	for i in $(DEPENDENCIES); do $(GOGET) $$i; done
+	$(GOCMD) mod tidy
 
 install:
 	for cmd in $(COMMANDS); do \
@@ -48,7 +46,7 @@ packages: clean
 			cd $(BASE_PATH); \
 			mkdir -p $(BUILD_PATH)/$(PROJECT)_$(VERSION)_$${os}_$${arch}; \
 			for cmd in $(COMMANDS); do \
-				GOOS=$${os} GOARCH=$${arch} $(GOCMD) build -ldflags "-X main.version $(VERSION) -X main.build \"$(BUILD)\"" -o $(BUILD_PATH)/$(PROJECT)_$(VERSION)_$${os}_$${arch}/$${cmd} $${cmd}.go ; \
+				GOOS=$${os} GOARCH=$${arch} $(GOCMD) build -ldflags "-X main.version=$(VERSION) -X main.build=\"$(BUILD)\"" -o $(BUILD_PATH)/$(PROJECT)_$(VERSION)_$${os}_$${arch}/$${cmd} $${cmd}.go ; \
 			done; \
 			for content in $(PKG_CONTENT); do \
 				cp -rf $${content} $(BUILD_PATH)/$(PROJECT)_$(VERSION)_$${os}_$${arch}/; \
@@ -61,4 +59,4 @@ clean:
 	echo $(VERSION)
 	rm -rf $(BUILD_PATH)
 
-	$(GOCLEAN) .
+	$(GOCMD) clean .

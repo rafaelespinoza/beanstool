@@ -15,7 +15,8 @@ var _ = Suite(&BuryCommandSuite{})
 func (s *BuryCommandSuite) SetUpTest(c *C) {
 	s.c = &BuryCommand{}
 	s.c.Host = "localhost:11300"
-	s.c.Init()
+	err := s.c.Init()
+	c.Assert(err, IsNil)
 
 	s.t = getRandomTube(s.c.conn)
 	s.c.Tube = s.t.Name

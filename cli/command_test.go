@@ -18,7 +18,8 @@ var _ = Suite(&CommandSuite{})
 
 func (s *CommandSuite) TestCommand_GetStatsForTube(c *C) {
 	cmd := &Command{Host: "localhost:11300"}
-	cmd.Init()
+	err := cmd.Init()
+	c.Assert(err, IsNil)
 
 	tube := getRandomTube(cmd.conn)
 	tube.Put([]byte(""), 1024, 0, 0)

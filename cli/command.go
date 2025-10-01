@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/agtorre/gocolorize"
 	"github.com/kr/beanstalk"
@@ -58,8 +60,19 @@ func (c *Command) GetStatsForTube(tube string) (*TubeStats, error) {
 		return nil, err
 	}
 
-	if name, ok := s["name"]; !ok || name != tube {
-		return nil, TubeStatsRetrievalError
+	name, ok := s["name"]
+	if !ok {
+		return nil, fmt.Errorf("%w, tube %s not found", TubeStatsRetrievalError, tube)
+	}
+	if strings.ContainsAny(name, `"'`) {
+		unquoted, err := strconv.Unquote(name)
+		if err != nil {
+			return nil, fmt.Errorf("%w, failed to unquote name %s", err, name)
+		}
+		name = unquoted
+	}
+	if name != tube {
+		return nil, fmt.Errorf("%w, got another tube; got_name=%s, expected_name=%s", TubeStatsRetrievalError, name, tube)
 	}
 
 	return &TubeStats{

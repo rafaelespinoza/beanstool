@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 )
 
 type KickCommand struct {
@@ -32,7 +32,7 @@ func (c *KickCommand) Kick() error {
 
 	fmt.Printf("Trying to kick %d jobs from %q ...\n", c.Num, c.Tube)
 
-	t := &beanstalk.Tube{Conn: c.conn, Name: c.Tube}
+	t := beanstalk.NewTube(c.conn, c.Tube)
 	kicked, err := t.Kick(c.Num)
 	if err != nil {
 		return err

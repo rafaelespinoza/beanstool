@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/agtorre/gocolorize"
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 )
 
 var TitleStyle = gocolorize.NewColor("green")
@@ -54,7 +54,7 @@ func (c *Command) PrintJob(id uint64, body []byte) error {
 }
 
 func (c *Command) GetStatsForTube(tube string) (*TubeStats, error) {
-	t := &beanstalk.Tube{Conn: c.conn, Name: tube}
+	t := beanstalk.NewTube(c.conn, tube)
 	s, err := t.Stats()
 	if err != nil {
 		return nil, err

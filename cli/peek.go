@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 )
 
 type PeekCommand struct {
@@ -19,7 +19,7 @@ func (c *PeekCommand) Execute(args []string) error {
 }
 
 func (c *PeekCommand) Peek() error {
-	t := &beanstalk.Tube{Conn: c.conn, Name: c.Tube}
+	t := beanstalk.NewTube(c.conn, c.Tube)
 	var id uint64
 	var body []byte
 	var err error

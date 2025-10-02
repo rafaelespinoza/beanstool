@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 )
 
 type DeleteCommand struct {
@@ -21,7 +21,7 @@ func (c *DeleteCommand) Execute(args []string) error {
 }
 
 func (c *DeleteCommand) Delete() error {
-	t := &beanstalk.Tube{Conn: c.conn, Name: c.Tube}
+	t := beanstalk.NewTube(c.conn, c.Tube)
 	for {
 		if err := c.deleteJob(t); err != nil {
 			if err.Error() == "peek-ready: not found" {

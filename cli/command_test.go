@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 	. "gopkg.in/check.v1"
 )
 

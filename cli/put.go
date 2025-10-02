@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 )
 
 type PutCommand struct {
@@ -26,7 +26,7 @@ func (c *PutCommand) Execute(args []string) error {
 }
 
 func (c *PutCommand) Put() error {
-	t := beanstalk.Tube{Conn: c.conn, Name: c.Tube}
+	t := beanstalk.NewTube(c.conn, c.Tube)
 
 	id, err := t.Put([]byte(c.Body), c.Priority, c.Delay, c.TTR)
 	if err != nil {

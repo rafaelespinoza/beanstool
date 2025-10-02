@@ -36,7 +36,7 @@ func getRandomTube(conn *beanstalk.Conn) *beanstalk.Tube {
 		panic(err)
 	}
 
-	name := strings.Replace(base64.URLEncoding.EncodeToString(rb), "=", "0", -1)
+	name := strings.ReplaceAll(base64.URLEncoding.EncodeToString(rb), "=", "0")
 
-	return &beanstalk.Tube{conn, name}
+	return &beanstalk.Tube{Conn: conn, Name: name}
 }

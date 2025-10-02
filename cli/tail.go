@@ -57,8 +57,6 @@ func (c *TailCommand) Tail() error {
 
 		fmt.Println(strings.Repeat("-", 80))
 	}
-
-	return nil
 }
 
 func (c *TailCommand) postPrintAction(id uint64) error {

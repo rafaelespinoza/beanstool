@@ -121,7 +121,7 @@ func (c *StatsCommand) GetStats() (map[string]*TubeStats, error) {
 
 func (c *StatsCommand) getTubesName() ([]string, error) {
 	if c.Tubes != "" {
-		return strings.Split(strings.Replace(c.Tubes, " ", "", -1), ","), nil
+		return strings.Split(strings.ReplaceAll(c.Tubes, " ", ""), ","), nil
 	}
 
 	return c.conn.ListTubes()

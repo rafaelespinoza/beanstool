@@ -35,6 +35,9 @@ test: dependencies
 dependencies:
 	$(GOCMD) mod tidy
 
+vet:
+	$(GOCMD) vet ./...
+
 install:
 	for cmd in $(COMMANDS); do \
 		cp -rf $${cmd} /usr/bin/; \

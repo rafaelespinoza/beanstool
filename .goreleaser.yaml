@@ -1,0 +1,34 @@
+---
+project_name: beanstool
+
+version: 2
+
+env:
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    - make clean
+
+builds:
+  - id: beanstool
+    dir: .
+    binary: beanstool
+    goarch:
+      - amd64
+      - arm64
+    goos:
+      - darwin
+      - linux
+
+checksum:
+  name_template: checksums.txt
+
+archives:
+  - wrap_in_directory: true
+
+release:
+  draft: true
+
+announce:
+  skip: true

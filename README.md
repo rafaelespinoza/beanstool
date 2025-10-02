@@ -1,21 +1,31 @@
 beanstool [![test](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml/badge.svg)](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml)
 ==============================
 
-Dependency free [beanstalkd](http://kr.github.io/beanstalkd/) admin tool.
+Dependency free [beanstalkd](https://beanstalkd.github.io/) admin tool.
 
-Basically this is a rework of the wonderful [bsTools](https://github.com/jimbojsb/bstools) with some extra features and of course without need to install any dependency. Very useful in companion of the server in a small docker container.
+This is a maintained fork of https://github.com/src-d/beanstool/. That is a rework of the wonderful [bsTools](https://github.com/jimbojsb/bstools) with some extra features and of course without need to install any dependency. Very useful in companion of the server in a small docker container.
 
 Installation
 ------------
 
-```
-wget https://github.com/src-d/beanstool/releases/download/v0.2.0/beanstool_v0.2.0_linux_amd64.tar.gz
-tar -xvzf beanstool_v0.2.0_linux_amd64.tar.gz
-cp beanstool_v0.2.0_linux_amd64/beanstool /usr/local/bin/
+If you have the [`gh` CLI](https://cli.github.com/) installed:
+```sh
+# Target this fork with the flag, `-R | --repo`
+$ gh --repo rafaelespinoza/beanstool release list
+
+# Pick the build for your platform. In this example, it's linux amd64.
+$ gh --repo rafaelespinoza/beanstool release download -p '*linux_amd64*' -p checksums.txt -D /tmp
+
+# [Optional] Verify the checksum downloaded in previous step from download destination dir
+$ cd /tmp
+$ grep linux_amd64 checksums.txt | sha256sum -c
+
+# Unarchive and copy to your bin place. The ${version} below is a placeholder.
+$ tar -xvzf beanstool_${version}_linux_amd64.tar.gz
+$ cp beanstool_${version}_linux_amd64/beanstool /usr/local/bin/
 ```
 
-browse the [`releases`](https://github.com/tyba/beanstool/releases) section to see other archs and versions
-
+Browse the [`releases`](https://github.com/rafaelespinoza/beanstool/releases) section to see other archs and versions.
 
 Usage
 -----

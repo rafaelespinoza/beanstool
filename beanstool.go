@@ -3,14 +3,15 @@ package main
 import (
 	"os"
 
+	"github.com/src-d/beanstool/cli"
+
 	"github.com/agtorre/gocolorize"
 	"github.com/jessevdk/go-flags"
-	"github.com/src-d/beanstool/cli"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 func main() {
-	if !terminal.IsTerminal(int(os.Stdout.Fd())) {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
 		gocolorize.SetPlain(true)
 	}
 

@@ -3,7 +3,7 @@ package cli
 import (
 	"time"
 
-	"github.com/kr/beanstalk"
+	"github.com/beanstalkd/go-beanstalk"
 	. "gopkg.in/check.v1"
 )
 

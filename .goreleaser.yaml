@@ -6,6 +6,10 @@ version: 2
 env:
   - CGO_ENABLED=0
 
+before:
+  hooks:
+    - make clean
+
 builds:
   - id: beanstool
     dir: .
@@ -17,9 +21,6 @@ builds:
       - darwin
       - linux
       - windows
-    hooks:
-      pre:
-        - cmd: make clean
 
 checksum:
   name_template: checksums.txt

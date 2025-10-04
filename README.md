@@ -1,4 +1,4 @@
-beanstool [![Circle CI](https://circleci.com/gh/src-d/beanstool.svg?style=svg)](https://circleci.com/gh/src-d/beanstool)
+beanstool [![test](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml/badge.svg)](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml)
 ==============================
 
 Dependency free [beanstalkd](http://kr.github.io/beanstalkd/) admin tool.

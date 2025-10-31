@@ -3,7 +3,10 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"sort"
+	"io"
+	"maps"
+	"os"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -33,10 +36,10 @@ func (c *StatsCommand) Execute(args []string) error {
 		return err
 	}
 
-	return c.PrintStats()
+	return c.PrintStats(os.Stdout)
 }
 
-func (c *StatsCommand) PrintStats() error {
+func (c *StatsCommand) PrintStats(w io.Writer) error {
 	stats, err := c.GetStats()
 	if err != nil {
 		return err
@@ -47,12 +50,12 @@ func (c *StatsCommand) PrintStats() error {
 		UseSeparator: true,
 	})
 
-	table.SetHeader([]string{
-		"Name", "Buried", "Delayed", "Ready", "Reserved", "Urgent", "Waiting", "Total",
-	})
+	table.SetHeader(statsTableHeaderRow)
 
-	table.AddRow(c.buildLineFromTubeStats(DefaultTube, stats[DefaultTube]))
-
+	if s, ok := stats[DefaultTube]; ok {
+		// Show the default tube first if data has been collected for that tube.
+		table.AddRow(c.buildLineFromTubeStats(DefaultTube, s))
+	}
 	for _, t := range sortedKeys(stats) {
 		if t == DefaultTube {
 			continue
@@ -61,12 +64,16 @@ func (c *StatsCommand) PrintStats() error {
 		table.AddRow(c.buildLineFromTubeStats(t, stats[t]))
 	}
 
-	fmt.Println(table.Render())
+	fmt.Fprintln(w, table.Render())
 	return nil
 }
 
+var statsTableHeaderRow = []string{
+	"Name", "Buried", "Delayed", "Ready", "Reserved", "Urgent", "Waiting", "Total",
+}
+
 func (c *StatsCommand) buildLineFromTubeStats(name string, s *TubeStats) []string {
-	var l []string
+	l := make([]string, 0, len(statsTableHeaderRow))
 
 	l = append(l, name)
 	l = append(l, addStyle(s.JobsBuried, 8, HighSeverity))
@@ -137,14 +144,6 @@ func mustConvertToInt(s string) int {
 }
 
 func sortedKeys(m map[string]*TubeStats) []string {
-	keys := make([]string, len(m))
-
-	i := 0
-	for key := range m {
-		keys[i] = key
-		i++
-	}
-
-	sort.Strings(keys)
-	return keys
+	keys := maps.Keys(m)
+	return slices.Sorted(keys)
 }

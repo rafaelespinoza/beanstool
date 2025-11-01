@@ -1,7 +1,7 @@
 beanstool [![test](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml/badge.svg)](https://github.com/rafaelespinoza/beanstool/actions/workflows/test.yaml)
 ==============================
 
-Dependency free [beanstalkd](https://beanstalkd.github.io/) admin tool.
+[beanstalkd](https://beanstalkd.github.io/) admin tool.
 
 This is a maintained fork of https://github.com/src-d/beanstool/. That is a rework of the wonderful [bsTools](https://github.com/jimbojsb/bstools) with some extra features and of course without need to install any dependency. Very useful in companion of the server in a small docker container.
 
@@ -26,6 +26,7 @@ $ cp beanstool_${version}_linux_amd64/beanstool /usr/local/bin/
 ```
 
 Browse the [`releases`](https://github.com/rafaelespinoza/beanstool/releases) section to see other archs and versions.
+As of 2025-11, it's unclear if the original upstream repository is going to see any development. In case it does, releases and tags for this fork are suffixed with `-fork`.
 
 Usage
 -----
@@ -47,7 +48,7 @@ Available commands:
   tail   tails a tube and prints his content
 ```
 
-As example this is the output of the command `./beanstool stats`:
+An example of the command `./beanstool stats`:
 
 ```
 +---------+----------+----------+----------+----------+----------+---------+-------+

@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"fmt"
+	"log/slog"
 	"strconv"
 	"time"
 
@@ -26,13 +26,14 @@ func (c *BuryCommand) Bury() error {
 	if err := c.calcNum(); err != nil {
 		return err
 	}
+	lgr := newLogger("bury", c.Tube)
 
 	if c.Num == 0 {
-		fmt.Printf("Empty ready queue at tube %q.\n", c.Tube)
+		lgr.Info("Empty ready queue at tube")
 		return nil
 	}
 
-	fmt.Printf("Trying to bury %d jobs from %q ...\n", c.Num, c.Tube)
+	lgr.Info("Trying to bury jobs", slog.Int("num_jobs", c.Num))
 
 	count := 0
 	ts := beanstalk.NewTubeSet(c.conn, c.Tube)
@@ -59,7 +60,7 @@ func (c *BuryCommand) Bury() error {
 		count++
 	}
 
-	fmt.Printf("Actually buried %d.\n", count)
+	lgr.Info("Actually buried", slog.Int("num_jobs", count))
 	return nil
 }
 

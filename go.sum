@@ -9,6 +9,10 @@ github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfn
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
+github.com/lmittmann/tint v1.1.2 h1:2CQzrL6rslrsyjqLDwD11bZ5OpLBPU+g3G/r5LSfS8w=
+github.com/lmittmann/tint v1.1.2/go.mod h1:HIS3gSy7qNwGCj+5oRjAutErFBl4BzdQP6cJZ0NfMwE=
+github.com/rafaelespinoza/logg v0.1.1 h1:rVF9Z3mcadixzRG53gXtJAj/+wmwgNZwW/7dBYec6ag=
+github.com/rafaelespinoza/logg v0.1.1/go.mod h1:a+Er8d9LXAlPieg2lWMU2zDaOUG1RutHMknpTytL6MI=
 github.com/stevedomin/termtable v0.0.0-20150929082024-09d29f3fd628 h1:f6X87W9rf8gQrniE11U1Go6YrlA/alLC0WCX70ITUaI=
 github.com/stevedomin/termtable v0.0.0-20150929082024-09d29f3fd628/go.mod h1:GSXnO3zhIxojyt7AVBvVpeQB7fbSCFOUo/0q5zz142A=
 golang.org/x/sys v0.36.0 h1:KVRy2GtZBrk1cBYA7MKu5bEZFxQk4NIDV6RLVcC8o0k=

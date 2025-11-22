@@ -2,11 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"log/slog"
 	"strconv"
 	"strings"
 
 	"github.com/agtorre/gocolorize"
 	"github.com/beanstalkd/go-beanstalk"
+	"github.com/rafaelespinoza/logg"
 )
 
 var TitleStyle = gocolorize.NewColor("green")
@@ -94,4 +96,8 @@ type TubeStats struct {
 	JobsUrgent   int
 	Waiting      int
 	TotalJobs    int
+}
+
+func newLogger(cmd, tube string) *slog.Logger {
+	return logg.New("", slog.String("cmd", cmd), slog.String("tube", tube))
 }

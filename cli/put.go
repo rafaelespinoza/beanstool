@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/beanstalkd/go-beanstalk"
@@ -33,9 +33,9 @@ func (c *PutCommand) Put() error {
 		return err
 	}
 
-	fmt.Printf(
-		"Added job with id %d to %s with priority %d, delay %s, TTR %d\n",
-		id, c.Tube, c.Priority, c.Delay.String(), c.TTR,
+	newLogger("put", c.Tube).Info("Added job",
+		slog.Uint64("id", id), slog.Uint64("priority", uint64(c.Priority)),
+		slog.String("delay", c.Delay.String()), slog.String("TTR", c.TTR.String()),
 	)
 
 	return nil

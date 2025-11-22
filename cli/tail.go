@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -28,7 +29,7 @@ func (c *TailCommand) Execute(args []string) error {
 
 func (c *TailCommand) Tail() error {
 	ts := beanstalk.NewTubeSet(c.conn, c.Tube)
-
+	lgr := newLogger("tail", c.Tube)
 	errors := 0
 	for {
 		if errors > 100 {
@@ -39,7 +40,7 @@ func (c *TailCommand) Tail() error {
 		if err != nil {
 			if err.Error() != "reserve-with-timeout: deadline soon" {
 				errors++
-				fmt.Println("Error", err)
+				lgr.Warn("Encountered error while reserving, continuing on", slog.String("error", err.Error()))
 			}
 
 			continue
@@ -47,7 +48,7 @@ func (c *TailCommand) Tail() error {
 
 		if err := c.PrintJob(id, body); err != nil {
 			errors++
-			fmt.Println("Error", err)
+			lgr.Warn("Encountered error while printing job, continuing on", slog.String("error", err.Error()), slog.Uint64("job_id", id))
 			continue
 		}
 

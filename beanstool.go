@@ -1,12 +1,19 @@
 package main
 
 import (
+	"io"
+	"log/slog"
 	"os"
+	"slices"
+	"strings"
+	"time"
 
 	"github.com/src-d/beanstool/cli"
 
 	"github.com/agtorre/gocolorize"
 	"github.com/jessevdk/go-flags"
+	"github.com/lmittmann/tint"
+	"github.com/rafaelespinoza/logg"
 	"golang.org/x/term"
 )
 
@@ -15,7 +22,18 @@ func main() {
 		gocolorize.SetPlain(true)
 	}
 
-	parser := flags.NewNamedParser("beanstool", flags.Default)
+	type GlobalFlags struct {
+		LogLevel  string `short:"l" long:"log-level" description:"configure logging level" choice:"DEBUG" choice:"INFO" choice:"WARN" choice:"ERROR" default:"INFO"`
+		LogFormat string `short:"f" long:"log-format" description:"configure logging format" choice:"JSON" choice:"TEXT" choice:"TINT" default:"TINT"`
+	}
+	var opts GlobalFlags
+
+	parser := flags.NewParser(&opts, flags.Default)
+	parser.CommandHandler = func(cmdr flags.Commander, args []string) error {
+		handler := makeSlogHandler(os.Stderr, opts.LogLevel, opts.LogFormat)
+		logg.SetDefaults(handler, nil)
+		return cmdr.Execute(args)
+	}
 	parser.AddCommand("stats", "print stats on all tubes", "", &cli.StatsCommand{})
 	parser.AddCommand("tail", "tails a tube and prints his content", "", &cli.TailCommand{})
 	parser.AddCommand("peek", "peeks a job from a queue", "", &cli.PeekCommand{})
@@ -32,4 +50,44 @@ func main() {
 
 		os.Exit(1)
 	}
+}
+
+var loggingLevels = []slog.Level{slog.LevelDebug, slog.LevelInfo, slog.LevelWarn, slog.LevelError}
+
+func makeSlogHandler(w io.Writer, logLevel, logFormat string) slog.Handler {
+	// The implied default logging level is INFO because it's the zero value in
+	// the log/slog package.
+	var lvl slog.Level
+	levels := make([]string, len(loggingLevels))
+	for i, validLevel := range loggingLevels {
+		levels[i] = validLevel.String()
+	}
+	if ind := slices.Index(levels, strings.ToUpper(strings.TrimSpace(logLevel))); ind >= 0 {
+		lvl = loggingLevels[ind]
+	} else {
+		slog.Debug("unknown logging level, setting to default",
+			slog.String("input_level", logLevel),
+			slog.String("default_level", lvl.String()),
+		)
+	}
+
+	var handler slog.Handler
+	opts := slog.HandlerOptions{Level: lvl}
+	switch strings.ToUpper(strings.TrimSpace(logFormat)) {
+	case "JSON":
+		handler = slog.NewJSONHandler(w, &opts)
+	case "TEXT":
+		handler = slog.NewTextHandler(w, &opts)
+	case "TINT":
+		opts := tint.Options{Level: lvl, TimeFormat: time.RFC3339}
+		handler = tint.NewHandler(w, &opts)
+	default:
+		slog.Debug("unknown logging format, setting to default",
+			slog.String("input_format", logFormat),
+			slog.String("default_format", "JSON"),
+		)
+		handler = slog.NewJSONHandler(w, &opts)
+	}
+
+	return handler
 }

@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"fmt"
+	"log/slog"
 
 	"github.com/beanstalkd/go-beanstalk"
 )
@@ -25,12 +25,14 @@ func (c *KickCommand) Kick() error {
 		return err
 	}
 
+	lgr := newLogger("kick", c.Tube)
+
 	if c.Num == 0 {
-		fmt.Printf("Empty buried queue at tube %q.\n", c.Tube)
+		lgr.Info("Empty buried queue at tube")
 		return nil
 	}
 
-	fmt.Printf("Trying to kick %d jobs from %q ...\n", c.Num, c.Tube)
+	lgr.Info("Trying to kick jobs", slog.Int("num_jobs", c.Num))
 
 	t := beanstalk.NewTube(c.conn, c.Tube)
 	kicked, err := t.Kick(c.Num)
@@ -38,7 +40,7 @@ func (c *KickCommand) Kick() error {
 		return err
 	}
 
-	fmt.Printf("Actually kicked %d.\n", kicked)
+	lgr.Info("Actually kicked", slog.Int("num_jobs", kicked))
 	return nil
 }
 
